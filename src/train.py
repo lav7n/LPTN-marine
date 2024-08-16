@@ -28,10 +28,10 @@ def main(args):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--img_dir', type=str, required=False, default='/content/BCSS_WSSS/BCSS-WSSS/val/img')
-    parser.add_argument('--seg_dir', type=str, required=False, default='/content/BCSS_WSSS/BCSS-WSSS/val/mask')
-    parser.add_argument('--batch_size', type=int, required=False, default=16)
-    parser.add_argument('--epochs', type=int, required=False, default=250)
+    parser.add_argument('--img_dir', type=str, required=False, default='/content/data/images')
+    parser.add_argument('--seg_dir', type=str, required=False, default='/content/data/masks')
+    parser.add_argument('--batch_size', type=int, required=False, default=8)
+    parser.add_argument('--epochs', type=int, required=False, default=100)
     parser.add_argument('--device', type=str, required=False, default='cuda')
     parser.add_argument('--encoder', type=str, required=False, default='resnet34')
     parser.add_argument('--encoder_weights', type=str, required=False, default='imagenet')
@@ -43,7 +43,7 @@ if __name__ == '__main__':
     parser.add_argument('--nrb_low', type=int, required=False, default=7)
     parser.add_argument('--nrb_high', type=int, required=False, default=7)
     parser.add_argument('--nrb_highest', type=int, required=False, default=2)
-    parser.add_argument('--num_classes', type=int, required=False, default=5)
+    parser.add_argument('--num_classes', type=int, required=False, default=3)
     arguments = parser.parse_args()
     main(arguments)
 
