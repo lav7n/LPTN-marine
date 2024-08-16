@@ -30,7 +30,7 @@ def visualize(**images):
     plt.show()
 
 def list_img(directory):
-    image_extensions = ['.png']
+    image_extensions = ['.png', '.jpg']
     image_paths = []
 
     for filename in os.listdir(directory):
