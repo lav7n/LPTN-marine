@@ -28,7 +28,7 @@ def train(epochs,
           nrb_low = 6,
           nrb_high = 6,        
           nrb_highest = 2,
-          num_classes = 5
+          num_classes = 3
          ):   
 
     model = LPTNPaper(
@@ -47,25 +47,11 @@ def train(epochs,
     if compiler:
         model = torch.compile(model)
 
-    # # Usage example:
-    # DATA_DIR = '/kaggle/input/ebhi-seg/EBHI-SEG'
-    # input_train, input_valid, input_test, target_train, target_valid, target_test = split_dataset(DATA_DIR)
- 
-    # preprocessing_fn = smp.encoders.get_preprocessing_fn(encoder, encoder_weights)
-    # Assuming image_dirs_list is your list of image directories
-    
-    imagelist = list_img('/content/BCSS_WSSS/BCSS-WSSS/val/img')
-    masklist = list_img('/content/BCSS_WSSS/BCSS-WSSS/val/mask')
+    imagelist = list_img(img_dir)
+    masklist = list_img(seg_dir)
 
-    # input_train, input_valid = train_test_split(imagelist, test_size=0.2, random_state=42)
-    # target_train, target_valid = train_test_split(masklist, test_size=0.2, random_state=42)
-
-    input_train, input_valid, target_train, target_valid = train_test_split(imagelist, masklist, test_size=0.2, random_state=42)
-
-
-    # input_train = list_img("/content/BCSS_WSSS/BCSS-WSSS/val/img")
-    # target_train = list_img("/content/BCSS_WSSS/BCSS-WSSS/val/mask")
-
+    input_train, input_valid, target_train, target_valid = train_test_split(imagelist, masklist, 
+                                                                    test_size=0.2, random_state=42)
 
     train_dataset = Dataset(
         input_train, 
@@ -86,21 +72,15 @@ def train(epochs,
     # valid_dataset.to(DEVICE)
     
     train_loader = DataLoader(train_dataset, batch_size, shuffle=True, num_workers=num_workers, drop_last=True, pin_memory=True, persistent_workers=True)
-    # print(train_loader)
     valid_loader = DataLoader(valid_dataset, batch_size, shuffle=True, num_workers=num_workers, drop_last=True, pin_memory=True, persistent_workers=True)
-    # # print(valid_loader)
 
     loss = custom_loss(batch_size, loss_weight=loss_weight)
     loss = loss.to(device)
 
-
     # D = Dice(average='none', threshold=0.5)
-    I = MulticlassJaccardIndex(num_classes = 5, ignore_index=0, average='macro') #I will return a tuple of classwise IOU
+    I = MulticlassJaccardIndex(num_classes = 3, average='macro') #I will return a tuple of classwise IOU
     # D.__name__ = 'dice'
     I.__name__ = 'IoU'
-
-    # for i in range(5):
-    #     I[i].__name__ = 'IoU'+str(i) #Naming the Logging
 
     metrics = [
         # D,
