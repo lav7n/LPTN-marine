@@ -78,7 +78,7 @@ def train(epochs,
     loss = loss.to(device)
 
     # D = Dice(average='none', threshold=0.5)
-    I = MulticlassJaccardIndex(num_classes = 3, average='macro') #I will return a tuple of classwise IOU
+    I = MulticlassJaccardIndex(num_classes = 4, average='macro') #I will return a tuple of classwise IOU
     # D.__name__ = 'dice'
     I.__name__ = 'IoU'
 

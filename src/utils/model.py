@@ -206,49 +206,49 @@ class LPTNPaper(nn.Module):
         """
         # create Laplacian Pyramid
         pyr = self.lap_pyramid.pyramid_decom(HR=input_img)
-        print("Pyramid length: ", len(pyr))
-        print("pyr[-1] size: ", pyr[-1].shape)
-        print("pyr[-2] size: ", pyr[-2].shape)
-        # print("pyr[-3] size: ", pyr[-3].shape)
+        # print("Pyramid length: ", len(pyr))
+        # print("pyr[-1] size: ", pyr[-1].shape)
+        # print("pyr[-2] size: ", pyr[-2].shape)
+        print("pyr[-3] size: ", pyr[-3].shape)
         
         # manually instantiating residual for readability
         residual = pyr[-1]
-        print("residual shape: ", residual.shape)
+        # print("residual shape: ", residual.shape)
         
         # creating mask
         mask = self.trans_low(pyr[-1])
-        print("mask shape: ", mask.shape)
+        # print("mask shape: ", mask.shape)
         
         # upsampling
         up_mask = self.mask_branch(mask)
-        print("up_mask shape: ", up_mask.shape)
+        # print("up_mask shape: ", up_mask.shape)
 
         # upsampling
         up_residual = self.high_branch(residual)
-        print("up_residual shape - ", up_residual.shape)
+        # print("up_residual shape - ", up_residual.shape)
         
         # concatenating
         higher = torch.cat([up_mask, pyr[-2], up_residual], 1)
-        print("higher shape: ", higher.shape)
+        # print("higher shape: ", higher.shape)
         
         # creating upper image
         trans_img = self.trans_high(higher)
-        print("trans img shape: ", trans_img.shape)
+        # print("trans img shape: ", trans_img.shape)
         
         # concatenating upper image with up
         upper = torch.cat([trans_img, up_mask], 1)
-        print("upper shape: ", upper.shape)
+        # print("upper shape: ", upper.shape)
         
         # applying transpose convolution
         up_upper = self.upper_branch(upper)
-        print("up_upper shape: ", up_upper.shape)
+        # print("up_upper shape: ", up_upper.shape)
         
         # concatenating
         highest = torch.cat([up_upper, pyr[-3]], 1)
-        print("highest shape: ", highest.shape)
+        # print("highest shape: ", highest.shape)
         
         # final layers
         output = self.trans_highest(highest)
-        print("output shape: ", output.shape)
+        # print("output shape: ", output.shape)
         
         return output

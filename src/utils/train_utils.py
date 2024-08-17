@@ -105,9 +105,10 @@ class Epoch:
             disable=not (self.verbose),
         ) as iterator:
             for x1, y in iterator:
+                y = y.squeeze(1)
                 x1, y = x1.to(self.device), y.to(self.device)
-                # print("x1 shape - ", x1.shape)
-                # print("y shape - ", y.shape)
+                print("x1 shape - ", x1.shape)
+                print("ygt shape - ", y.shape)
                 loss, y_pred = self.batch_update(x1, y)
 
                 # update loss logs
@@ -118,7 +119,7 @@ class Epoch:
 
                 # update metrics logs
                 for metric_fn in self.metrics:
-                    # y_pred = torch.argmax(y_pred, dim=1)
+                    y_pred = torch.argmax(y_pred, dim=1)
                     metric_value = metric_fn(y_pred, y.int()).cpu().detach().numpy()
                     #metric_value = metric_fn(y_pred, y.int()).detach().cuda()
                     metrics_meters[metric_fn.__name__].add(metric_value)
