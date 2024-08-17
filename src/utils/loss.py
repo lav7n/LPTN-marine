@@ -71,7 +71,7 @@ class custom_loss(base.Loss):
         
         # y=self.dice(y_pr, y_gt)
         y = self.ce(y_pr, y_gt)
-        f=self.focal(y_pr, y_gt)
+        f = self.focal(y_pr, y_gt)
 
         return (self.loss_weight)*y + (1-self.loss_weight)*f
     

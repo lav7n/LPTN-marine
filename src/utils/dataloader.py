@@ -21,6 +21,8 @@ class Dataset(BaseDataset):
         image = image.reshape(384, 512, 3)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
+        #TODO standardize the input
+
         mask_array = cv2.imread(self.masks_list[i], 0)
         mask = mask_array.reshape(384, 512, 1)
 
