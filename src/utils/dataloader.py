@@ -31,6 +31,9 @@ class Dataset(BaseDataset):
         
         mask = mask_array.reshape(384, 512, 1)
 
+        print("MASK SHAPE: ", mask.shape)
+        print("MASK VALUES", mask)
+
         # apply augmentations
         if self.augmentation:
             sample = self.augmentation(image=image, mask=mask)
