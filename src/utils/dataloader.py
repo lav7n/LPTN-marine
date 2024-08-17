@@ -10,7 +10,7 @@ from torchvision import transforms
 from PIL import Image
 
 class Dataset(BaseDataset):
-    def __init__(self, images_dir, masks_dir, augmentation=None, preprocessing=None):
+    def __init__(self, images_dir, masks_dir, augmentation=None, preprocessing=True):
         self.images_list = images_dir
         self.masks_list = masks_dir
         self.augmentation = augmentation
