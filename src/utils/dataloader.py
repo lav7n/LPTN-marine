@@ -36,7 +36,7 @@ class Dataset(BaseDataset):
 
         # Print unique values after mapping
         unique_values_after = np.unique(mask_array)
-        print(f"Unique values in mask {i} after mapping: {unique_values_after}")
+        # print(f"Unique values in mask {i} after mapping: {unique_values_after}")
 
         # apply augmentations
         if self.augmentation:
