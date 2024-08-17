@@ -26,6 +26,9 @@ class Dataset(BaseDataset):
         mask_array = cv2.imread(self.masks_list[i], 0)
         mask = mask_array.reshape(384, 512, 1)
 
+        unique_values = np.unique(mask_array)
+        print(f"Unique values in mask {i}: {unique_values}")
+
         # Map 4 to 3 in the mask
         # mask_array[mask_array == 4] = 3
         
