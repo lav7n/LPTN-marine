@@ -20,22 +20,21 @@ class Dataset(BaseDataset):
         image = cv2.imread(self.images_list[i])
         image = image.reshape(384, 512, 3)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
-        #TODO standardize the input
+        
+        # TODO standardize the input
 
         mask_array = cv2.imread(self.masks_list[i], 0)
         mask = mask_array.reshape(384, 512, 1)
 
-        unique_values = np.unique(mask_array)
-        print(f"Unique values in mask {i}: {unique_values}")
-
-        # Map 4 to 3 in the mask
-        # mask_array[mask_array == 4] = 3
+        # Map all values of 4 to 3 in the mask
+        mask_array[mask_array == 4] = 3
         
-        # mask = mask_array.reshape(384, 512, 1)
+        # Reshape mask after mapping
+        mask = mask_array.reshape(384, 512, 1)
 
-        print("MASK SHAPE: ", mask.shape)
-        print("MASK VALUES", mask)
+        # Print unique values after mapping
+        unique_values_after = np.unique(mask_array)
+        print(f"Unique values in mask {i} after mapping: {unique_values_after}")
 
         # apply augmentations
         if self.augmentation:
@@ -51,3 +50,4 @@ class Dataset(BaseDataset):
         
     def __len__(self):
         return len(self.images_list)
+
