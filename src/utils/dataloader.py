@@ -24,12 +24,12 @@ class Dataset(BaseDataset):
         #TODO standardize the input
 
         mask_array = cv2.imread(self.masks_list[i], 0)
-        mask_array = mask_array.reshape(384, 512)
+        mask_array = mask_array.reshape(384, 512, 1)
 
         # Map 4 to 3 in the mask
-        mask_array[mask_array == 4] = 3
+        # mask_array[mask_array == 4] = 3
         
-        mask = mask_array.reshape(384, 512, 1)
+        # mask = mask_array.reshape(384, 512, 1)
 
         print("MASK SHAPE: ", mask.shape)
         print("MASK VALUES", mask)
