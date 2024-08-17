@@ -107,8 +107,8 @@ class Epoch:
             for x1, y in iterator:
                 y = y.squeeze(1)
                 x1, y = x1.to(self.device), y.to(self.device)
-                print("x1 shape - ", x1.shape)
-                print("ygt shape - ", y.shape)
+                # print("x1 shape - ", x1.shape)
+                # print("ygt shape - ", y.shape)
                 loss, y_pred = self.batch_update(x1, y)
 
                 # update loss logs

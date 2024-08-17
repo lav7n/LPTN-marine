@@ -209,7 +209,7 @@ class LPTNPaper(nn.Module):
         # print("Pyramid length: ", len(pyr))
         # print("pyr[-1] size: ", pyr[-1].shape)
         # print("pyr[-2] size: ", pyr[-2].shape)
-        print("pyr[-3] size: ", pyr[-3].shape)
+        # print("pyr[-3] size: ", pyr[-3].shape)
         
         # manually instantiating residual for readability
         residual = pyr[-1]
