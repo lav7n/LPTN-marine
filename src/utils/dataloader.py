@@ -9,48 +9,46 @@ import torch
 from torchvision import transforms
 from PIL import Image
 
-class Dataset(BaseDataset):
+class CustomDataset(Dataset):
     def __init__(self, images_dir, masks_dir, augmentation=None, preprocessing=True):
         self.images_list = images_dir
         self.masks_list = masks_dir
         self.augmentation = augmentation
         self.preprocessing = preprocessing
 
-        # mean and std computed for normalized input
-        self.mean = np.array([0.63799969, 0.67506404, 0.59012203], dtype=np.float32)
-        self.std = np.array([0.21021621, 0.20920322, 0.20019643], dtype=np.float32)
+        # Define the scaled RGB to class index mapping
+        self.scaled_rgb_to_class = {
+            (0, 0, 0): 0,       # Background (waterbody) - Black
+            (0, 0, 255): 1,     # Human divers - Blue
+            (0, 255, 0): 2,     # Aquatic plants and sea-grass - Green
+            (0, 255, 255): 3,   # Wrecks and ruins - Sky
+            (255, 0, 0): 4,     # Robots (AUVs/ROVs/instruments) - Red
+            (255, 0, 255): 5,   # Reefs and invertebrates - Pink
+            (255, 255, 0): 6,   # Fish and vertebrates - Yellow
+            (255, 255, 255): 7  # Sea-floor and rocks - White
+        }
 
     def __getitem__(self, i):
         image = cv2.imread(self.images_list[i])
-        image = image.reshape(384, 512, 3)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-        mask_array = cv2.imread(self.masks_list[i], 0)
-        mask = mask_array.reshape(384, 512, 1)
+        mask = cv2.imread(self.masks_list[i])
+        mask_rgb = cv2.cvtColor(mask, cv2.COLOR_BGR2RGB)
+        mask_mapped = np.zeros((mask_rgb.shape[0], mask_rgb.shape[1]), dtype=np.uint8)
 
-        # Map all values of 4 to 3 in the mask
-        mask_array[mask_array == 4] = 3
-        
-        # Reshape mask after mapping
-        mask = mask_array.reshape(384, 512, 1)
+        for rgb, cls in self.scaled_rgb_to_class.items():
+            mask_mapped[(mask_rgb == rgb).all(axis=2)] = cls
 
-        # Print unique values after mapping
-        unique_values_after = np.unique(mask_array)
-        # print(f"Unique values in mask {i} after mapping: {unique_values_after}")
-
-        # apply augmentations
         if self.augmentation:
-            sample = self.augmentation(image=image, mask=mask)
-            image, mask = sample['image'], sample['mask']
+            sample = self.augmentation(image=image, mask=mask_mapped)
+            image, mask_mapped = sample['image'], sample['mask']
     
-        if self.preprocessing:
-            image = image / 255.0
-            image = (image - self.mean) / self.std
+        image = image / 255.0
         
-        image = image.transpose(2, 0, 1).astype('float32')
-        mask = mask.transpose(2, 0, 1).astype('float32')
+        image = torch.from_numpy(image.transpose(2, 0, 1)).float()
+        mask_mapped = torch.from_numpy(mask_mapped).unsqueeze(0).long()
 
-        return image, mask 
+        return image, mask_mapped
         
     def __len__(self):
         return len(self.images_list)
