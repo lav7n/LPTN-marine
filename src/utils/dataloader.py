@@ -31,14 +31,19 @@ class Dataset(BaseDataset):
     def __getitem__(self, i):
         image = cv2.imread(self.images_list[i])
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image = cv2.resize(image, (480,640))  # Resize the image
+        image = cv2.resize(image, (640, 480))  # Resize the image to (width, height)
 
         mask = cv2.imread(self.masks_list[i])
         mask_rgb = cv2.cvtColor(mask, cv2.COLOR_BGR2RGB)
-        mask_rgb = cv2.resize(mask_rgb, (480,640))  # Resize the mask_rgb
+        mask_rgb = cv2.resize(mask_rgb, (640, 480))  # Resize the mask_rgb to (width, height)
 
-        # Initialize mask_mapped
-        mask_mapped = np.zeros((480,640), dtype=np.uint8)
+        # Initialize mask_mapped with the same height and width as mask_rgb
+        mask_mapped = np.zeros((480, 640), dtype=np.uint8)
+
+        # Print shapes to debug
+        # print(f"Image shape: {image.shape}")
+        # print(f"Mask RGB shape: {mask_rgb.shape}")
+        # print(f"Mask mapped shape: {mask_mapped.shape}")
 
         # Map the RGB values to class indices
         for rgb, cls in self.scaled_rgb_to_class.items():
@@ -60,5 +65,7 @@ class Dataset(BaseDataset):
         
     def __len__(self):
         return len(self.images_list)
+
+
 
 
