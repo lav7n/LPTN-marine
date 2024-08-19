@@ -2,14 +2,14 @@ import numpy as np
 import cv2
 from .misc import list_img
 from torch.utils.data import DataLoader
-from torch.utils.data import Dataset 
+from torch.utils.data import Dataset as BaseDataset
 from sklearn.model_selection import train_test_split
 import os
 import torch
 from torchvision import transforms
 from PIL import Image
 
-class CustomDataset(Dataset):
+class Dataset(BaseDataset):
     def __init__(self, images_dir, masks_dir, augmentation=None, preprocessing=True):
         self.images_list = images_dir
         self.masks_list = masks_dir
