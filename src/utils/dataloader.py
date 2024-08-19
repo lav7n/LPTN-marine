@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 from .misc import list_img
 from torch.utils.data import DataLoader
-from torch.utils.data import Dataset as BaseDataset
+from torch.utils.data import Dataset 
 from sklearn.model_selection import train_test_split
 import os
 import torch
