@@ -43,7 +43,7 @@ if __name__ == '__main__':
     parser.add_argument('--nrb_low', type=int, required=False, default=7)
     parser.add_argument('--nrb_high', type=int, required=False, default=7)
     parser.add_argument('--nrb_highest', type=int, required=False, default=2)
-    parser.add_argument('--num_classes', type=int, required=False, default=1, help='num_classes=1 means multiclass, >1 means multilabel')
+    parser.add_argument('--num_classes', type=int, required=False, default=1)
     arguments = parser.parse_args()
     main(arguments)
 
