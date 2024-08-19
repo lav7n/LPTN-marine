@@ -58,21 +58,9 @@ class custom_loss(base.Loss):
         self.loss_weight = loss_weight
 
     def forward(self, y_pr, y_gt, ft1=None):
-
-        # print("\ny_pred - ", y_pr.shape)
-        # print("y_gt before unsqueeze - ", y_gt.shape)
-
-      
-
         y_gt = y_gt.to(torch.int64)
-        # if y_gt.ndim == 4:
-        #     y_gt = y_gt.squeeze(1)
         y_gt = y_gt.squeeze(1)
 
-        # print("y_pr - ", y_pr.shape)
-        # print("y_gt - ", y_gt.shape)
-        
-        # y=self.dice(y_pr, y_gt)
         y = self.ce(y_pr, y_gt)
         f = self.focal(y_pr, y_gt)
 
