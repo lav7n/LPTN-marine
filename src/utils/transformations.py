@@ -10,7 +10,7 @@ def get_training_augmentation():
         albu.ShiftScaleRotate(scale_limit=0.5, rotate_limit=0, shift_limit=0.1, p=0.5, border_mode=0),
         
         # Add padding with a specific value (e.g., 0 for black padding)
-        albu.PadIfNeeded(min_height=640, min_width=480, always_apply=True, border_mode=0, value=0),
+        albu.PadIfNeeded(min_height=480, min_width=640, always_apply=True, border_mode=0, value=0),
 
         # Other augmentations can be added here
     ]
@@ -20,7 +20,7 @@ def get_training_augmentation():
 def get_validation_augmentation():
     """Add paddings to make image shape divisible by 32"""
     test_transform = [
-        albu.PadIfNeeded(640,480)
+        albu.PadIfNeeded(480,640)
     ]
     return albu.Compose(test_transform)
 
