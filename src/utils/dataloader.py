@@ -36,6 +36,9 @@ class Dataset(BaseDataset):
         mask_rgb = cv2.cvtColor(mask, cv2.COLOR_BGR2RGB)
         mask_mapped = np.zeros((mask_rgb.shape[0], mask_rgb.shape[1]), dtype=np.uint8)
 
+        image = cv2.resize(image, (480,640))
+        mask_mapped = cv2.resize(mask_mapped, (480,640))
+
         for rgb, cls in self.scaled_rgb_to_class.items():
             mask_mapped[(mask_rgb == rgb).all(axis=2)] = cls
 
