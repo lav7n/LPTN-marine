@@ -119,6 +119,7 @@ class Epoch:
 
                 # update metrics logs
                 for metric_fn in self.metrics:
+                    print('Computing :', metric_fn.__name__)
                     y_pred = torch.argmax(y_pred, dim=1)
                     metric_value = metric_fn(y_pred, y.int()).cpu().detach().numpy()
                     #metric_value = metric_fn(y_pred, y.int()).detach().cuda()
