@@ -9,11 +9,11 @@ from .model import LPTNPaper
 from torchmetrics.classification import Dice, MulticlassJaccardIndex
 #from .loss import DiceLoss
 from segmentation_models_pytorch.utils.metrics import IoU
-from torchmetrics import JaccardIndex
+from torchmetrics import JaccardIndex, Precision, Recall, F1Score, Dice
 import torch
 from torch.utils.data import DataLoader
 from sklearn.model_selection import train_test_split
-from statistics import mean
+# from statistics import mean
 
 def train(epochs,
           batch_size, 
@@ -77,14 +77,24 @@ def train(epochs,
     loss = custom_loss(batch_size, loss_weight=loss_weight)
     loss = loss.to(device)
 
-    # D = Dice(average='none', threshold=0.5)
-    I = MulticlassJaccardIndex(num_classes = 4, average='micro', ignore_index=3) #I will return a tuple of classwise IOU
-    # D.__name__ = 'dice'
+    D = Dice(average='micro', threshold=0.5)
+    I = MulticlassJaccardIndex(num_classes=4, average='micro', ignore_index=3) #I will return a tuple of classwise IOU
+    P = Precision(task='multiclass', average='micro', num_classes=4)
+    R = Recall(task='multiclass', average='micro', num_classes=4)
+    F = F1Score(task='multiclass', average='micro', num_classes=4)
+
+    D.__name__ = 'Dice'
     I.__name__ = 'IoU'
+    P.__name__ = 'Precision'
+    R.__name__ = 'Recall'
+    F.__name__ = 'F1Score'
 
     metrics = [
-        # D,
+        D,
         I,
+        P,
+        R,
+        F
     ]
 
     optimizer = torch.optim.Adam([ 
@@ -114,6 +124,9 @@ def train(epochs,
 
     max_dice = 0
     max_IoU = 0
+    max_precision = 0
+    max_recall = 0
+    max_f1score = 0
 
     for i in range(0, epochs):
         
@@ -123,17 +136,30 @@ def train(epochs,
         # scheduler.step()
         #wandb.log({'epoch':i+1,'t_loss':train_logs['custom_loss'],'t_dice':train_logs['dice'],'t_jaccard':train_logs['jaccard']})
         wandb.log({'epoch':i+1,'t_loss':train_logs['custom_loss'],'v_loss':valid_logs['custom_loss'],
-                   'v_IoU':valid_logs['IoU'],'t_IoU':train_logs['IoU']})
+                    'v_IoU':valid_logs['IoU'],'t_IoU':train_logs['IoU'],
+                    'v_dice': valid_logs['Dice'], 't_dice': train_logs['Dice'],
+                    'v_precision': valid_logs['Precision'], 't_precision': train_logs['Precision'],
+                    'v_recall': valid_logs['Recall'], 't_recall': train_logs['Recall'],
+                    'v_f1score': valid_logs['F1Score'], 't_f1score': train_logs['F1Score']
+                   })
         # 't_dice':train_logs['dice']'v_dice':valid_logs['dice'],
         # do something (save model, change lr, etc.)
         if max_IoU <= valid_logs['IoU']:
             # max_dice = valid_logs['dice']
             max_IoU = valid_logs['IoU']
-            wandb.config.update({'max_IoU':max_IoU}, allow_val_change=True)
+            max_dice = valid_logs['Dice']
+            max_precision = valid_logs['Precision']
+            max_recall = valid_logs['Recall']
+            max_f1score = valid_logs['f1score'] 
+            wandb.config.update({'max_IoU':max_IoU, 'max_Dice':max_dice, 'max_Precision': max_precision, 'max_Recall': max_recall, 'max_F1score': max_f1score}, allow_val_change=True)
             torch.save(model.state_dict(), './best_model.pth')
             print('Model saved!')
          
     print(f'max IoU: {max_IoU}')
+    print(f'max_Dice:{max_dice}') 
+    print(f'max_Precision: {max_precision}')
+    print(f'max_Recall: {max_recall}')
+    print(f'max_F1score: {max_f1score}')
 
 def train_model(configs):
     train(configs['epochs'], configs['batch_size'], configs['img_dir'],configs['seg_dir'],
