@@ -123,6 +123,7 @@ class Epoch:
 
                 # update metrics logs
                 for metric_fn in self.metrics:
+                    print('Computing :', metric_fn.__name__)
                     metrics_meters = {metric.__name__: [AverageValueMeter() for _ in range(5)] for metric in self.metrics}
 
                     for metric_fn in self.metrics:
