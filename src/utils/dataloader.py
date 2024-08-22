@@ -15,6 +15,9 @@ class Dataset(BaseDataset):
         self.masks_list = masks_dir
         self.augmentation = augmentation
         self.preprocessing = preprocessing
+        self.mean = np.array([0.24173183, 0.43415226, 0.49751509], dtype=np.float32)
+        self.std = np.array([0.17116954, 0.18768028, 0.20497839], dtype=np.float32)
+
 
         # Define the scaled RGB to class index mapping
         self.scaled_rgb_to_class = {
@@ -51,6 +54,7 @@ class Dataset(BaseDataset):
     
         # Normalize the image
         image = image / 255.0
+        image = (image - self.mean) / self.std
         
         # Convert numpy arrays to torch tensors
         image = torch.from_numpy(image.transpose(2, 0, 1)).float()  # Convert to (C, H, W) format
