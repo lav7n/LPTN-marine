@@ -154,8 +154,8 @@ class TrainEpoch(Epoch):
     def batch_update(self, x1, y):
         self.optimizer.zero_grad()
         prediction = self.model.forward(x1)
-        # print("\nprediction shape - ", prediction.shape)
-        # print("y shape - ", y.shape)
+        print("\nIn batch update:\nprediction shape - ", prediction.shape)
+        print("y shape - ", y.shape)
         loss = self.loss(prediction, y)
         loss.backward()
         self.optimizer.step()
