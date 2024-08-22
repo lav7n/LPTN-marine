@@ -126,7 +126,7 @@ def train(epochs,
     max_IoU = 0
     max_precision = 0
     max_recall = 0
-    max_f1score = 0
+    max_F1score = 0
 
     for i in range(0, epochs):
         
@@ -140,7 +140,7 @@ def train(epochs,
                     'v_dice': valid_logs['Dice'], 't_dice': train_logs['Dice'],
                     'v_precision': valid_logs['Precision'], 't_precision': train_logs['Precision'],
                     'v_recall': valid_logs['Recall'], 't_recall': train_logs['Recall'],
-                    'v_f1score': valid_logs['F1Score'], 't_f1score': train_logs['F1Score']
+                    'v_F1score': valid_logs['F1Score'], 't_F1score': train_logs['F1Score']
                    })
         # 't_dice':train_logs['dice']'v_dice':valid_logs['dice'],
         # do something (save model, change lr, etc.)
@@ -150,8 +150,8 @@ def train(epochs,
             max_dice = valid_logs['Dice']
             max_precision = valid_logs['Precision']
             max_recall = valid_logs['Recall']
-            max_f1score = valid_logs['f1score'] 
-            wandb.config.update({'max_IoU':max_IoU, 'max_Dice':max_dice, 'max_Precision': max_precision, 'max_Recall': max_recall, 'max_F1score': max_f1score}, allow_val_change=True)
+            max_F1score = valid_logs['F1score'] 
+            wandb.config.update({'max_IoU':max_IoU, 'max_Dice':max_dice, 'max_Precision': max_precision, 'max_Recall': max_recall, 'max_F1score': max_F1score}, allow_val_change=True)
             torch.save(model.state_dict(), './best_model.pth')
             print('Model saved!')
          
@@ -159,7 +159,7 @@ def train(epochs,
     print(f'max_Dice:{max_dice}') 
     print(f'max_Precision: {max_precision}')
     print(f'max_Recall: {max_recall}')
-    print(f'max_F1score: {max_f1score}')
+    print(f'max_F1score: {max_F1score}')
 
 def train_model(configs):
     train(configs['epochs'], configs['batch_size'], configs['img_dir'],configs['seg_dir'],
