@@ -30,7 +30,18 @@ def visualize(**images):
     plt.show()
 
 def list_img(directory):
-    image_extensions = ['.png', '.jpg', 'bmp']
+    image_extensions = ['.png', '.jpg']
+    image_paths = []
+
+    for filename in os.listdir(directory):
+        if any(filename.lower().endswith(ext) for ext in image_extensions):
+            full_path = os.path.join(directory, filename)
+            image_paths.append(full_path)
+
+    return sorted(image_paths)
+
+def list_masks(directory):
+    image_extensions = ['.bmp']
     image_paths = []
 
     for filename in os.listdir(directory):

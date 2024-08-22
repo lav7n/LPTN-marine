@@ -4,7 +4,7 @@ from .train_utils import TrainEpoch, ValidEpoch
 from .loss import custom_loss
 from .dataloader import Dataset
 from .transformations import get_training_augmentation, get_validation_augmentation, get_preprocessing
-from .misc import list_img
+from .misc import list_img, list_masks
 from .model import LPTNPaper
 from torchmetrics.classification import Dice, MulticlassJaccardIndex
 #from .loss import DiceLoss
@@ -48,7 +48,7 @@ def train(epochs,
         model = torch.compile(model)
 
     imagelist = list_img(img_dir)
-    masklist = list_img(seg_dir)
+    masklist = list_masks(img_dir)
 
     input_train, input_valid, target_train, target_valid = train_test_split(imagelist, masklist, 
                                                                     test_size=0.2, random_state=42)
@@ -78,7 +78,7 @@ def train(epochs,
     loss = loss.to(device)
 
     # D = Dice(average='none', threshold=0.5)
-    I = MulticlassJaccardIndex(num_classes = 8, average='macro', ignore_index=0) #I will return a tuple of classwise IOU
+    I = MulticlassJaccardIndex(num_classes = 2, average='macro', ignore_index=0) #I will return a tuple of classwise IOU
     # D.__name__ = 'dice'
     I.__name__ = 'IoU'
 
