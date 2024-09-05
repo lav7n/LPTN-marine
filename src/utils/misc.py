@@ -31,14 +31,30 @@ def visualize(**images):
 
 def list_img(directory):
     image_extensions = ['.png', '.jpg']
-    image_paths = []
 
-    for filename in os.listdir(directory):
+    # Define paths for images and masks subdirectories
+    images_dir = os.path.join(directory, 'images')
+    masks_dir = os.path.join(directory, 'masks')
+
+    # Initialize lists for images and masks
+    image_paths = []
+    mask_paths = []
+
+    # List images from the 'images' subdirectory
+    for filename in os.listdir(images_dir):
         if any(filename.lower().endswith(ext) for ext in image_extensions):
-            full_path = os.path.join(directory, filename)
+            full_path = os.path.join(images_dir, filename)
             image_paths.append(full_path)
 
-    return sorted(image_paths)
+    # List masks from the 'masks' subdirectory
+    for filename in os.listdir(masks_dir):
+        if any(filename.lower().endswith(ext) for ext in image_extensions):
+            full_path = os.path.join(masks_dir, filename)
+            mask_paths.append(full_path)
+
+    # Sort and return the two lists
+    return sorted(image_paths), sorted(mask_paths)
+
 
 def convert_nifti_to_png(nifti_path, output_dir):
     # Load the NIfTI file

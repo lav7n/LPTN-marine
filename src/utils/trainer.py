@@ -18,7 +18,7 @@ from sklearn.model_selection import train_test_split
 def train(epochs,
           batch_size, 
           img_dir, 
-          seg_dir, 
+          val_dir, 
           device='cuda', 
           lr=1e-4, 
           compiler=False, 
@@ -47,11 +47,11 @@ def train(epochs,
     if compiler:
         model = torch.compile(model)
 
-    imagelist = list_img(img_dir)
-    masklist = list_img(seg_dir)
+    input_train, target_train = list_img(img_dir)
+    input_valid, target_valid = list_img(val_dir)
 
-    input_train, input_valid, target_train, target_valid = train_test_split(imagelist, masklist, 
-                                                                    test_size=0.2, random_state=42)
+    # input_train, input_valid, target_train, target_valid = train_test_split(imagelist, masklist, 
+    #                                                                 test_size=0.2, random_state=42)
 
     train_dataset = Dataset(
         input_train, 
@@ -78,7 +78,7 @@ def train(epochs,
     loss = loss.to(device)
 
     D = Dice(average='micro', threshold=0.5)
-    I = MulticlassJaccardIndex(num_classes=4, average='micro', ignore_index=3) #I will return a tuple of classwise IOU
+    I = MulticlassJaccardIndex(num_classes=4, average='micro', ignore_index=0) #I will return a tuple of classwise IOU
     P = Precision(task='multiclass', average='micro', num_classes=4)
     R = Recall(task='multiclass', average='micro', num_classes=4)
     F = F1Score(task='multiclass', average='micro', num_classes=4)
@@ -162,7 +162,7 @@ def train(epochs,
     print(f'max_F1Score: {max_F1Score}')
 
 def train_model(configs):
-    train(configs['epochs'], configs['batch_size'], configs['img_dir'],configs['seg_dir'],
+    train(configs['epochs'], configs['batch_size'], configs['img_dir'],configs['val_dir'],
         configs['device'], configs['lr'], 
           configs['compile'], configs['num_workers'], configs['checkpoint'], configs['loss_weight'],
           configs['nrb_low'],configs['nrb_high'],configs['nrb_highest'], configs['num_classes'])
