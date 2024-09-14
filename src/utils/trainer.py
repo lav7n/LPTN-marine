@@ -13,7 +13,6 @@ from torchmetrics import JaccardIndex, Precision, Recall, F1Score, Dice
 import torch
 from torch.utils.data import DataLoader
 from sklearn.model_selection import train_test_split
-from segmentation_models_pytorch import Une
 # from statistics import mean
 
 def train(epochs,
