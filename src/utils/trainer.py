@@ -76,6 +76,16 @@ def train(epochs,
         classes=num_classes
         )
         model.to(device)
+
+    elif model == "pspnet":
+        
+        model = smp.PSPNet(
+        encoder_name="resnet34",        
+        encoder_weights="imagenet", 
+        in_channels=3, 
+        classes=num_classes
+        )
+        model.to(device)
     
 
     if compiler:
