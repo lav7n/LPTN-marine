@@ -28,7 +28,8 @@ def train(epochs,
           nrb_low = 6,
           nrb_high = 6,        
           nrb_highest = 2,
-          num_classes = 3
+          num_classes = 3,
+          model='lptn'
          ):   
 
     if model == "lptn":
