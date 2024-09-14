@@ -13,6 +13,7 @@ from torchmetrics import JaccardIndex, Precision, Recall, F1Score, Dice
 import torch
 from torch.utils.data import DataLoader
 from sklearn.model_selection import train_test_split
+from segmentation_models_pytorch import Une
 # from statistics import mean
 
 def train(epochs,
@@ -31,18 +32,51 @@ def train(epochs,
           num_classes = 3
          ):   
 
-    model = LPTNPaper(
-     nrb_low=nrb_low, 
-     nrb_high=nrb_high,
-     nrb_highest=nrb_highest,
-     num_high=2, 
-     in_channels=3,
-     kernel_size=3,
-     padding=1, 
-     num_classes=num_classes,
-     device=device
-    )
-    model.to(device)
+    if model == "lptn":
+
+        model = LPTNPaper(
+        nrb_low=nrb_low, 
+        nrb_high=nrb_high,
+        nrb_highest=nrb_highest,
+        num_high=2, 
+        in_channels=3,
+        kernel_size=3,
+        padding=1, 
+        num_classes=num_classes,
+        device=device
+        )
+        model.to(device)
+
+    elif model == "unet":
+
+        model = smp.Unet(
+        encoder_name="resnet34",        
+        encoder_weights="imagenet", 
+        in_channels=3, 
+        classes=num_classes
+        )
+        model.to(device)
+
+    elif model == "deeplabv3":
+
+        model = smp.DeepLabV3(
+        encoder_name="resnet34",        
+        encoder_weights="imagenet", 
+        in_channels=3, 
+        classes=num_classes
+        )
+        model.to(device)
+
+    elif model == "fpn":
+
+        model = smp.FPN(
+        encoder_name="resnet34",        
+        encoder_weights="imagenet", 
+        in_channels=3, 
+        classes=num_classes
+        )
+        model.to(device)
+    
 
     if compiler:
         model = torch.compile(model)
@@ -165,4 +199,4 @@ def train_model(configs):
     train(configs['epochs'], configs['batch_size'], configs['img_dir'],configs['val_dir'],
         configs['device'], configs['lr'], 
           configs['compile'], configs['num_workers'], configs['checkpoint'], configs['loss_weight'],
-          configs['nrb_low'],configs['nrb_high'],configs['nrb_highest'], configs['num_classes'])
+          configs['nrb_low'],configs['nrb_high'],configs['nrb_highest'], configs['num_classes'], configs['model'])

@@ -19,7 +19,8 @@ def main(args):
         'nrb_low':args.nrb_low,
         'nrb_high':args.nrb_high,
         'nrb_highest':args.nrb_highest,
-        'num_classes':args.num_classes
+        'num_classes':args.num_classes,
+        'model': args.model
     }
     wandb.init(project="lptn-medical-new", entity="kasliwal17",
                config={'model':'resnet34 depth4','nrb_low': args.nrb_low,'nrb_high':args.nrb_high,'nrb_highest': args.nrb_highest, 
@@ -46,6 +47,7 @@ if __name__ == '__main__':
     parser.add_argument('--nrb_high', type=int, required=False, default=7)
     parser.add_argument('--nrb_highest', type=int, required=False, default=2)
     parser.add_argument('--num_classes', type=int, required=False, default=1)
+    parser.add_argument('--model', type=str, required=False, default='lptn')
     arguments = parser.parse_args()
     main(arguments)
 
