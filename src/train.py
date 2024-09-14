@@ -31,8 +31,8 @@ def main(args):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--img_dir', type=str, required=False, default='/content/data/images')
-    parser.add_argument('--val_dir', type=str, required=False, default='/content/data/masks')
+    parser.add_argument('--img_dir', type=str, required=False, default="/kaggle/input/oil-spill/train")
+    parser.add_argument('--val_dir', type=str, required=False, default="/kaggle/input/oil-spill/val")
     parser.add_argument('--batch_size', type=int, required=False, default=8)
     parser.add_argument('--epochs', type=int, required=False, default=100)
     parser.add_argument('--device', type=str, required=False, default='cuda')
@@ -46,7 +46,7 @@ if __name__ == '__main__':
     parser.add_argument('--nrb_low', type=int, required=False, default=7)
     parser.add_argument('--nrb_high', type=int, required=False, default=7)
     parser.add_argument('--nrb_highest', type=int, required=False, default=2)
-    parser.add_argument('--num_classes', type=int, required=False, default=1)
+    parser.add_argument('--num_classes', type=int, required=False, default=4)
     parser.add_argument('--model', type=str, required=False, default='lptn')
     arguments = parser.parse_args()
     main(arguments)
