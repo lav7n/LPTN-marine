@@ -30,8 +30,8 @@ def main(args):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--img_dir', type=str, required=False, default='/content/data/images')
-    parser.add_argument('--seg_dir', type=str, required=False, default='/content/data/masks')
+    parser.add_argument('--img_dir', type=str, required=False, default='/kaggle/input/lars-dataset/lars_v1.0.0_images/train/images')
+    parser.add_argument('--seg_dir', type=str, required=False, default='/kaggle/input/lars-dataset/lars_v1.0.0_annotations/train/semantic_masks')
     parser.add_argument('--batch_size', type=int, required=False, default=8)
     parser.add_argument('--epochs', type=int, required=False, default=100)
     parser.add_argument('--device', type=str, required=False, default='cuda')
