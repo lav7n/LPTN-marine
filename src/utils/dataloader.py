@@ -27,7 +27,7 @@ class Dataset(BaseDataset):
 
         mask_array = cv2.imread(self.masks_list[i], 0)
         mask_array = cv2.resize(mask_array, (512,512))
-        mask_array[mask_array > 2] = 0
+        mask_array[mask_array > 2] = 3
         
         # Reshape mask after mapping
         # mask = mask_array.reshape(384, 512, 1)
