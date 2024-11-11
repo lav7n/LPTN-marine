@@ -22,17 +22,16 @@ class Dataset(BaseDataset):
 
     def __getitem__(self, i):
         image = cv2.imread(self.images_list[i])
-        image = image.reshape(384, 512, 3)
+        image = cv2.resize(image, (512,512))
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
         mask_array = cv2.imread(self.masks_list[i], 0)
-        mask = mask_array.reshape(384, 512, 1)
-
-        # Map all values of 4 to 3 in the mask
+        mask_array = cv2.resize(mask_array, (512,512))
         mask_array[mask_array > 2] = 0
         
         # Reshape mask after mapping
-        mask = mask_array.reshape(384, 512, 1)
+        # mask = mask_array.reshape(384, 512, 1)
+        mask = mask_array.reshape(*mask_array.shape, 1)
 
         # apply augmentations
         if self.augmentation:
@@ -50,4 +49,3 @@ class Dataset(BaseDataset):
         
     def __len__(self):
         return len(self.images_list)
-

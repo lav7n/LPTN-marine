@@ -40,29 +40,3 @@ def list_img(directory):
 
     return sorted(image_paths)
 
-def convert_nifti_to_png(nifti_path, output_dir):
-    # Load the NIfTI file
-    img = nib.load(nifti_path)
-    data = np.array(img.dataobj)
-    
-    # Create the output directory if it doesn't exist
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-    
-    # Iterate over the slices and save them as PNG files
-    for i in range(data.shape[2]):
-        # Extract the slice
-        slice_data = data[:, :, i]
-        
-        # Normalize the slice data (optional)
-        slice_data = (slice_data - np.min(slice_data)) / (np.max(slice_data) - np.min(slice_data))
-        
-        # Convert the slice to a PIL image
-        image = Image.fromarray((slice_data * 255).astype(np.uint8))
-        
-        # Save the image as PNG
-        output_path = os.path.join(output_dir, f"slice_{i}.png")
-        image.save(output_path)
-        
-        print(f"Saved slice {i} as PNG: {output_path}")
-        
