@@ -22,10 +22,9 @@ def main(args):
         'num_classes':args.num_classes,
         'model': args.model
     }
-    wandb.init(project="lptn-medical-new", entity="kasliwal17",
-               config={'model':'resnet34 depth4','nrb_low': args.nrb_low,'nrb_high':args.nrb_high,'nrb_highest': args.nrb_highest, 
-                       'num_classes': args.num_classes, 'lr':args.lr, 'max_dice':0, 'max_IoU':0, 'loss_weight':args.loss_weight, 'max_Dice':0, 
-                       'max_Precision': 0, 'max_Recall': 0, 'max_F1Score': 0})
+    wandb.init(project="lptn-maritime", entity="kasliwal17",
+               config={'model':args.model,'nrb_low': args.nrb_low,'nrb_high':args.nrb_high,'nrb_highest': args.nrb_highest, 
+                       'num_classes': args.num_classes, 'lr':args.lr, 'max_dice':0, 'max_IoU':0, 'loss_weight':args.loss_weight})
     train_model(config)
 
 if __name__ == '__main__':

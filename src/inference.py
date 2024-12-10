@@ -1,5 +1,5 @@
 import argparse
-from utils.test import test_model
+from utils.tester import test_model
 import wandb
 
 def main(args):
