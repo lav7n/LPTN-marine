@@ -5,7 +5,7 @@ import wandb
 def main(args):
     config = {
         'img_dir': args.img_dir,
-        'seg_dir': args.seg_dir,
+        'val_dir': args.val_dir,
         'batch_size': args.batch_size,
         'epochs': args.epochs,
         'device':args.device,
@@ -19,21 +19,21 @@ def main(args):
         'nrb_low':args.nrb_low,
         'nrb_high':args.nrb_high,
         'nrb_highest':args.nrb_highest,
-        'num_classes':args.num_classes
+        'num_classes':args.num_classes,
+        'model': args.model
     }
-    wandb.init(project="lptn-medical-new", entity="kasliwal17",
-               config={'model':'resnet34 depth4','nrb_low': args.nrb_low,'nrb_high':args.nrb_high,'nrb_highest': args.nrb_highest, 
-                       'num_classes': args.num_classes, 'lr':args.lr, 'max_dice':0, 'max_IoU':0, 'loss_weight':args.loss_weight, 'max_Dice':0, 
-                       'max_Precision': 0, 'max_Recall': 0, 'max_F1Score': 0})
+    wandb.init(project="lptn-maritime", entity="kasliwal17",
+               config={'model':args.model,'nrb_low': args.nrb_low,'nrb_high':args.nrb_high,'nrb_highest': args.nrb_highest, 
+                       'num_classes': args.num_classes, 'lr':args.lr, 'max_IoU':0, 'loss_weight':args.loss_weight})
     train_model(config)
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--img_dir', type=str, required=False, default='/kaggle/input/lars-dataset/lars_v1.0.0_images/train/images')
-    parser.add_argument('--seg_dir', type=str, required=False, default='/kaggle/input/lars-dataset/lars_v1.0.0_annotations/train/semantic_masks')
+    parser.add_argument('--img_dir', type=str, required=False, default="/kaggle/input/lars-dataset/lars_v1.0.0_images/train/images")
+    parser.add_argument('--val_dir', type=str, required=False, default="/kaggle/input/lars-dataset/lars_v1.0.0_annotations/train/semantic_masks")
     parser.add_argument('--batch_size', type=int, required=False, default=8)
-    parser.add_argument('--epochs', type=int, required=False, default=100)
+    parser.add_argument('--epochs', type=int, required=False, default=250)
     parser.add_argument('--device', type=str, required=False, default='cuda')
     parser.add_argument('--encoder', type=str, required=False, default='resnet34')
     parser.add_argument('--encoder_weights', type=str, required=False, default='imagenet')
@@ -46,6 +46,6 @@ if __name__ == '__main__':
     parser.add_argument('--nrb_high', type=int, required=False, default=7)
     parser.add_argument('--nrb_highest', type=int, required=False, default=2)
     parser.add_argument('--num_classes', type=int, required=False, default=4)
+    parser.add_argument('--model', type=str, required=False, default='lptn')
     arguments = parser.parse_args()
     main(arguments)
-
