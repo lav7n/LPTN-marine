@@ -1,4 +1,7 @@
 import wandb
+import random
+import numpy as np
+import os
 import segmentation_models_pytorch as smp
 from .train_utils import TrainEpoch, ValidEpoch
 from .loss import custom_loss
@@ -10,9 +13,24 @@ from torchmetrics.classification import MulticlassJaccardIndex
 import torch
 from torch.utils.data import DataLoader
 
+def set_seed(seed):
+    """Set seeds for reproducibility"""
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    # These settings ensure deterministic behavior
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    # Set a fixed value for Python hash seed
+    os.environ["PYTHONHASHSEED"] = str(seed)
+
 def train(epochs, batch_size, img_dir, val_dir, device='cuda', lr=1e-4, compiler=False, 
           num_workers=4, checkpoint='', loss_weight=0.5, nrb_low=6, nrb_high=6, 
-          nrb_highest=2, num_classes=3, model='lptn'):   
+          nrb_highest=2, num_classes=3, model='lptn', seed=42):   
+
+    # Set seeds for reproducibility
+    set_seed(seed)
 
     if model == "lptn":
         model = LPTNPaper(nrb_low=nrb_low, nrb_high=nrb_high, nrb_highest=nrb_highest,
@@ -38,15 +56,26 @@ def train(epochs, batch_size, img_dir, val_dir, device='cuda', lr=1e-4, compiler
     input_train, target_train = list_img(img_dir)
     input_valid, target_valid = list_img(val_dir)
 
+    # Set worker init function to ensure deterministic data loading
+    def worker_init_fn(worker_id):
+        worker_seed = seed + worker_id
+        random.seed(worker_seed)
+        np.random.seed(worker_seed)
+        torch.manual_seed(worker_seed)
+
     train_dataset = Dataset(input_train, target_train, 
                           augmentation=get_training_augmentation(), preprocessing=True)
     valid_dataset = Dataset(input_valid, target_valid,
                           augmentation=get_validation_augmentation(), preprocessing=True)
     
     train_loader = DataLoader(train_dataset, batch_size, shuffle=True, num_workers=num_workers,
-                            drop_last=True, pin_memory=True, persistent_workers=True)
+                            drop_last=False, pin_memory=True, persistent_workers=True,
+                            worker_init_fn=worker_init_fn,
+                            generator=torch.Generator().manual_seed(seed))
     valid_loader = DataLoader(valid_dataset, batch_size, shuffle=True, num_workers=num_workers,
-                            drop_last=True, pin_memory=True, persistent_workers=True)
+                            drop_last=False, pin_memory=True, persistent_workers=True,
+                            worker_init_fn=worker_init_fn,
+                            generator=torch.Generator().manual_seed(seed))
 
     loss = custom_loss(batch_size, loss_weight=loss_weight)
     loss = loss.to(device)
@@ -92,4 +121,4 @@ def train_model(configs):
     train(configs['epochs'], configs['batch_size'], configs['img_dir'], configs['val_dir'],
           configs['device'], configs['lr'], configs['compile'], configs['num_workers'], 
           configs['checkpoint'], configs['loss_weight'], configs['nrb_low'], configs['nrb_high'],
-          configs['nrb_highest'], configs['num_classes'], configs['model'])
+          configs['nrb_highest'], configs['num_classes'], configs['model'], configs['seed'])
