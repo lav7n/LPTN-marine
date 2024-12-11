@@ -103,7 +103,7 @@ def train(epochs, batch_size, img_dir, val_dir, device='cuda', lr=1e-4, compiler
         if max_iou <= valid_logs['IoU']:
             max_iou = valid_logs['IoU']
             wandb.config.update({'max_IoU': max_iou}, allow_val_change=True)
-            torch.save(model.state_dict(), f'./best_model_{nrb_low}_{nrb_high}_{nrb_highest}.pth')
+            torch.save(model.state_dict(), f'./best_MASTR_{nrb_low}_{nrb_high}_{nrb_highest}.pth')
             print('Model saved!')
          
     print(f'max IoU: {max_iou}')
