@@ -60,11 +60,11 @@ def train(epochs, batch_size, img_dir, val_dir, device='cuda', lr=1e-4, compiler
                           augmentation=get_validation_augmentation(), preprocessing=True)
     
     train_loader = DataLoader(train_dataset, batch_size, shuffle=True, num_workers=num_workers,
-                            drop_last=True, pin_memory=True, persistent_workers=True,
+                            drop_last=False, pin_memory=True, persistent_workers=True,
                             worker_init_fn=worker_init_fn,
                             generator=torch.Generator().manual_seed(seed))
     valid_loader = DataLoader(valid_dataset, batch_size, shuffle=True, num_workers=num_workers,
-                            drop_last=True, pin_memory=True, persistent_workers=True,
+                            drop_last=False, pin_memory=True, persistent_workers=True,
                             worker_init_fn=worker_init_fn,
                             generator=torch.Generator().manual_seed(seed))
 
