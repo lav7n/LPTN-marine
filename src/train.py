@@ -33,7 +33,7 @@ if __name__ == '__main__':
     parser.add_argument('--img_dir', type=str, required=False, default="/kaggle/input/oil-spill/train")
     parser.add_argument('--val_dir', type=str, required=False, default="/kaggle/input/oil-spill/val")
     parser.add_argument('--batch_size', type=int, required=False, default=8)
-    parser.add_argument('--epochs', type=int, required=False, default=100)
+    parser.add_argument('--epochs', type=int, required=False, default=250)
     parser.add_argument('--device', type=str, required=False, default='cuda')
     parser.add_argument('--encoder', type=str, required=False, default='resnet34')
     parser.add_argument('--encoder_weights', type=str, required=False, default='imagenet')
