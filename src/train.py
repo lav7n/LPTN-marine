@@ -21,11 +21,13 @@ def main(args):
         'nrb_highest':args.nrb_highest,
         'num_classes':args.num_classes,
         'model': args.model,
-        'seed': args.seed
+        'seed': args.seed,
+        'loss_type': args.loss_type
+
     }
     wandb.init(project="lptn-maritime", entity="kasliwal17",
                config={'model':args.model,'nrb_low': args.nrb_low,'nrb_high':args.nrb_high,'nrb_highest': args.nrb_highest, 
-                       'num_classes': args.num_classes, 'lr':args.lr, 'max_dice':0, 'max_IoU':0, 'loss_weight':args.loss_weight, 'seed':args.seed})
+                       'num_classes': args.num_classes, 'lr':args.lr, 'max_dice':0, 'max_IoU':0, 'loss_weight':args.loss_weight, 'seed':args.seed, 'loss_type':args.loss_type})
     train_model(config)
 
 if __name__ == '__main__':
@@ -49,6 +51,7 @@ if __name__ == '__main__':
     parser.add_argument('--num_classes', type=int, required=False, default=4)
     parser.add_argument('--model', type=str, required=False, default='lptn')
     parser.add_argument('--seed', type=int, required=False, default=42)
+    parser.add_argument('--loss_type', type=str, required=False, default='focal')
     arguments = parser.parse_args()
     main(arguments)
 

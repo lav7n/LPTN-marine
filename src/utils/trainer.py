@@ -27,7 +27,7 @@ def set_seed(seed):
 
 def train(epochs, batch_size, img_dir, val_dir, device='cuda', lr=1e-4, compiler=False, 
           num_workers=4, checkpoint='', loss_weight=0.5, nrb_low=6, nrb_high=6, 
-          nrb_highest=2, num_classes=3, model='lptn', seed=42):   
+          nrb_highest=2, num_classes=3, model='lptn', seed=42, loss_type='focal'):   
 
     # Set seeds for reproducibility
     set_seed(seed)
@@ -77,7 +77,7 @@ def train(epochs, batch_size, img_dir, val_dir, device='cuda', lr=1e-4, compiler
                             worker_init_fn=worker_init_fn,
                             generator=torch.Generator().manual_seed(seed))
 
-    loss = custom_loss(batch_size, loss_weight=loss_weight)
+    loss = custom_loss(batch_size, loss_weight=loss_weight, loss_type=loss_type)
     loss = loss.to(device)
 
     iou_metric = MulticlassJaccardIndex(num_classes=4, average='micro', ignore_index=0)
@@ -121,4 +121,4 @@ def train_model(configs):
     train(configs['epochs'], configs['batch_size'], configs['img_dir'], configs['val_dir'],
           configs['device'], configs['lr'], configs['compile'], configs['num_workers'], 
           configs['checkpoint'], configs['loss_weight'], configs['nrb_low'], configs['nrb_high'],
-          configs['nrb_highest'], configs['num_classes'], configs['model'], configs['seed'])
+          configs['nrb_highest'], configs['num_classes'], configs['model'], configs['seed'], configs['loss_type'])
