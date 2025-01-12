@@ -3,7 +3,7 @@ from torch.nn import CrossEntropyLoss
 from segmentation_models_pytorch.losses import FocalLoss, DiceLoss
 from segmentation_models_pytorch.utils import base
 
-class CustomLoss(base.Loss):
+class custom_loss(base.Loss):
     def __init__(self, batch_size, loss_type="focal", loss_weight=0.5):
         super().__init__()
         self.loss_type = loss_type.lower()
