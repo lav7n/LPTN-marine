@@ -27,6 +27,12 @@ class custom_loss(base.Loss):
             dice_loss = self.dice(y_pr, y_gt)
             return self.loss_weight * ce_loss + (1 - self.loss_weight) * dice_loss
 
+        elif self.loss_type == "focal+dice":
+            # Focal + Dice loss
+            focal_loss = self.focal(y_pr, y_gt)
+            dice_loss = self.dice(y_pr, y_gt)
+            return self.loss_weight * focal_loss + (1 - self.loss_weight) * dice_loss
+
         elif self.loss_type == "dice":
             # Dice loss only
             return self.dice(y_pr, y_gt)
