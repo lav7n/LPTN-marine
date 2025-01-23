@@ -156,6 +156,8 @@ class TrainEpoch(Epoch):
         prediction = self.model.forward(x1)
         # print("\nIn batch update:\nprediction shape - ", prediction.shape)
         # print("y shape - ", y.shape)
+        print("Shape of y:", y.shape)
+        print("Shape of prediction:", prediction.shape)
         loss = self.loss(prediction, y)
         loss.backward()
         self.optimizer.step()
