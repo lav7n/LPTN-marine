@@ -46,8 +46,8 @@ def test(epochs,
     if compiler:
         model = torch.compile(model)
 
-    input_test = list_img('/content/BCSS_WSSS/BCSS-WSSS/test/img')
-    target_test = list_img('/content/BCSS_WSSS/BCSS-WSSS/test/mask')
+    input_test = list_img(img_dir)
+    target_test = list_img(seg_dir)
 
 
     test_dataset = Dataset(
@@ -66,7 +66,7 @@ def test(epochs,
 
 
     # D = Dice(average='none', threshold=0.5)
-    I = MulticlassJaccardIndex(num_classes = 5, ignore_index=0, average='none')
+    I = MulticlassJaccardIndex(num_classes = num_classes, ignore_index=0, average='none')
     # D.__name__ = 'dice'
     I.__name__ = 'IoU'
 
