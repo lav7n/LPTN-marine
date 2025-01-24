@@ -4,7 +4,7 @@ from .test_utils import TrainEpoch, ValidEpoch, global_lists
 from .loss import custom_loss
 from .dataloader import Dataset
 from .transformations import get_training_augmentation, get_validation_augmentation, get_preprocessing
-from .misc import list_img
+from .misc import list_img_test
 from .model import LPTNPaper
 from torchmetrics.classification import Dice, MulticlassJaccardIndex
 #from .loss import DiceLoss
@@ -46,8 +46,8 @@ def test(epochs,
     if compiler:
         model = torch.compile(model)
 
-    input_test = list_img(img_dir)
-    target_test = list_img(seg_dir)
+    input_test = list_img_test(img_dir)
+    target_test = list_img_test(seg_dir)
 
 
     test_dataset = Dataset(

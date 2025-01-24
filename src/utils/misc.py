@@ -55,6 +55,14 @@ def list_img(directory):
     # Sort and return the two lists
     return sorted(image_paths), sorted(mask_paths)
 
+def list_img_test(Dir):
+    Ext = ['.png', '.jpg']
+    ImgPths = []
+    for F in os.listdir(Dir):
+        if any(F.lower().endswith(E) for E in Ext):
+            ImgPths.append(os.path.join(Dir, F))
+    return sorted(ImgPths)
+
 
 def convert_nifti_to_png(nifti_path, output_dir):
     # Load the NIfTI file
