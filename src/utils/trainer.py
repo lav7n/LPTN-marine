@@ -152,10 +152,8 @@ def train(epochs, batch_size, img_dir, val_dir, device='cuda', lr=1e-4, compiler
     print(f'max IoU: {max_iou}')
 
 def train_model(configs):
-    print(configs)
-    # Ensure 'hp_tuning' exists in configs and default to False if not
     hp_tuning = configs.get('hp_tuning', False)
-    
+
     if hp_tuning:
         study = optuna.create_study(direction='maximize')
         study.optimize(lambda trial: Obj(trial, configs['img_dir'], configs['val_dir']), n_trials=20)
