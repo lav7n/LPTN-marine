@@ -135,17 +135,17 @@ def train(epochs, batch_size, img_dir, val_dir, device='cuda', lr=1e-4, compiler
         train_logs = train_epoch.run(train_loader)
         valid_logs = valid_epoch.run(valid_loader)
 
-        wandb.log({
-            'epoch': i + 1,
-            't_loss': train_logs['custom_loss'],
-            'v_loss': valid_logs['custom_loss'],
-            'v_IoU': valid_logs['IoU'],
-            't_IoU': train_logs['IoU']
-        })
+        # wandb.log({
+        #     'epoch': i + 1,
+        #     't_loss': train_logs['custom_loss'],
+        #     'v_loss': valid_logs['custom_loss'],
+        #     'v_IoU': valid_logs['IoU'],
+        #     't_IoU': train_logs['IoU']
+        # })
 
         if max_iou <= valid_logs['IoU']:
             max_iou = valid_logs['IoU']
-            wandb.config.update({'max_IoU': max_iou}, allow_val_change=True)
+            # wandb.config.update({'max_IoU': max_iou}, allow_val_change=True)
             torch.save(model.state_dict(), f'./best_Oil_{nrb_low}_{nrb_high}_{nrb_highest}.pth')
             print('Model saved!')
          
