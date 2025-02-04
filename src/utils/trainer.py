@@ -16,8 +16,8 @@ import optuna
 
 def Obj(trial, img_dir, val_dir):
     # Define hyperparameters to tune
-    lr = trial.suggest_loguniform('lr', 1e-5, 1e-2)
-    batch_size = trial.suggest_categorical('batch_size', [16, 32, 64])
+    lr = trial.suggest_loguniform('lr', 1e-5, 1e-3)
+    # batch_size = trial.suggest_categorical('batch_size', [16, 32, 64])
     loss_weight = trial.suggest_uniform('loss_weight', 0.1, 1.0)
     nrb_low = trial.suggest_int('nrb_low', 4, 8)
     nrb_high = trial.suggest_int('nrb_high', 4, 8)
@@ -25,7 +25,7 @@ def Obj(trial, img_dir, val_dir):
     
     configs = {
         'epochs': 10,  # Set low for tuning speed, adjust as needed
-        'batch_size': batch_size,
+        'batch_size': 8,
         'img_dir': img_dir,
         'val_dir': val_dir,
         'device': 'cuda',
