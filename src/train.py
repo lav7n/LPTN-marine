@@ -53,7 +53,8 @@ if __name__ == '__main__':
     parser.add_argument('--model', type=str, required=False, default='lptn')
     parser.add_argument('--seed', type=int, required=False, default=42)
     parser.add_argument('--loss_type', type=str, required=False, default='focal')
-    parser.add_argument('--hp_tuning', type=bool, required=False, default=False)
+    parser.add_argument('--hp_tuning', action='store_true', help="Enable hyperparameter tuning")
+
     arguments = parser.parse_args()
     main(arguments)
 
