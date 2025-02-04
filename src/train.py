@@ -23,7 +23,7 @@ def main(args):
         'model': args.model,
         'seed': args.seed,
         'loss_type': args.loss_type,
-        'hp_tuning': args.hp_tuning
+        'hp_tuning': args.hp_tuning if hasattr(args, 'hp_tuning') else False
 
     }
     wandb.init(project="lptn-maritime", entity="kasliwal17",
