@@ -26,9 +26,9 @@ def main(args):
         'hp_tuning': args.hp_tuning if hasattr(args, 'hp_tuning') else False
 
     }
-    wandb.init(project="lptn-maritime", entity="kasliwal17",
-               config={'model':args.model,'nrb_low': args.nrb_low,'nrb_high':args.nrb_high,'nrb_highest': args.nrb_highest, 
-                       'num_classes': args.num_classes, 'lr':args.lr, 'max_dice':0, 'max_IoU':0, 'loss_weight':args.loss_weight, 'seed':args.seed, 'loss_type':args.loss_type})
+    # wandb.init(project="lptn-maritime", entity="kasliwal17",
+    #            config={'model':args.model,'nrb_low': args.nrb_low,'nrb_high':args.nrb_high,'nrb_highest': args.nrb_highest, 
+    #                    'num_classes': args.num_classes, 'lr':args.lr, 'max_dice':0, 'max_IoU':0, 'loss_weight':args.loss_weight, 'seed':args.seed, 'loss_type':args.loss_type})
     train_model(config)
 
 if __name__ == '__main__':
