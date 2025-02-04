@@ -12,6 +12,40 @@ from .model import LPTNPaper
 from torchmetrics.classification import MulticlassJaccardIndex
 import torch
 from torch.utils.data import DataLoader
+import optuna
+
+def Obj(trial, img_dir, val_dir):
+    # Define hyperparameters to tune
+    lr = trial.suggest_loguniform('lr', 1e-5, 1e-2)
+    batch_size = trial.suggest_categorical('batch_size', [16, 32, 64])
+    loss_weight = trial.suggest_uniform('loss_weight', 0.1, 1.0)
+    nrb_low = trial.suggest_int('nrb_low', 4, 8)
+    nrb_high = trial.suggest_int('nrb_high', 4, 8)
+    nrb_highest = trial.suggest_int('nrb_highest', 1, 3)
+    
+    configs = {
+        'epochs': 10,  # Set low for tuning speed, adjust as needed
+        'batch_size': batch_size,
+        'img_dir': img_dir,
+        'val_dir': val_dir,
+        'device': 'cuda',
+        'lr': lr,
+        'compile': False,
+        'num_workers': 4,
+        'checkpoint': '',
+        'loss_weight': loss_weight,
+        'nrb_low': nrb_low,
+        'nrb_high': nrb_high,
+        'nrb_highest': nrb_highest,
+        'num_classes': 3,
+        'model': 'lptn',
+        'seed': 42,
+        'loss_type': 'focal'
+    }
+    
+    # Train model with these hyperparameters
+    iou = train_model(configs)
+    return iou  # Optuna maximizes IoU  
 
 def set_seed(seed):
     """Set seeds for reproducibility"""
@@ -118,7 +152,12 @@ def train(epochs, batch_size, img_dir, val_dir, device='cuda', lr=1e-4, compiler
     print(f'max IoU: {max_iou}')
 
 def train_model(configs):
-    train(configs['epochs'], configs['batch_size'], configs['img_dir'], configs['val_dir'],
-          configs['device'], configs['lr'], configs['compile'], configs['num_workers'], 
-          configs['checkpoint'], configs['loss_weight'], configs['nrb_low'], configs['nrb_high'],
-          configs['nrb_highest'], configs['num_classes'], configs['model'], configs['seed'], configs['loss_type'])
+    if configs['hp_tuning']:
+        study = optuna.create_study(direction='maximize')
+        study.optimize(lambda trial: Obj(trial, configs['img_dir'], configs['val_dir']), n_trials=20)
+        print("Best hyperparameters:", study.best_params)
+    else:
+        train(configs['epochs'], configs['batch_size'], configs['img_dir'], configs['val_dir'],
+              configs['device'], configs['lr'], configs['compile'], configs['num_workers'], 
+              configs['checkpoint'], configs['loss_weight'], configs['nrb_low'], configs['nrb_high'],
+              configs['nrb_highest'], configs['num_classes'], configs['model'], configs['seed'], configs['loss_type'])

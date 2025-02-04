@@ -22,7 +22,8 @@ def main(args):
         'num_classes':args.num_classes,
         'model': args.model,
         'seed': args.seed,
-        'loss_type': args.loss_type
+        'loss_type': args.loss_type,
+        'hp_tuning': args.hp_tuning
 
     }
     wandb.init(project="lptn-maritime", entity="kasliwal17",
@@ -52,6 +53,7 @@ if __name__ == '__main__':
     parser.add_argument('--model', type=str, required=False, default='lptn')
     parser.add_argument('--seed', type=int, required=False, default=42)
     parser.add_argument('--loss_type', type=str, required=False, default='focal')
+    parser.add_argument('--hp_tuning', type=bool, required=False, default=False)
     arguments = parser.parse_args()
     main(arguments)
 
