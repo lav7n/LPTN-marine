@@ -19,9 +19,9 @@ def Obj(trial, img_dir, val_dir):
     lr = trial.suggest_loguniform('lr', 1e-5, 1e-3)
     # batch_size = trial.suggest_categorical('batch_size', [16, 32, 64])
     loss_weight = trial.suggest_uniform('loss_weight', 0.1, 1.0)
-    # nrb_low = trial.suggest_int('nrb_low', 4, 8)
-    # nrb_high = trial.suggest_int('nrb_high', 4, 8)
-    # nrb_highest = trial.suggest_int('nrb_highest', 1, 3)
+    nrb_low = trial.suggest_int('nrb_low', 4, 8)
+    nrb_high = trial.suggest_int('nrb_high', 4, 8)
+    nrb_highest = trial.suggest_int('nrb_highest', 1, 3)
     
     configs = {
         'epochs': 10,  # Set low for tuning speed, adjust as needed
@@ -37,7 +37,7 @@ def Obj(trial, img_dir, val_dir):
         'nrb_low': nrb_low,
         'nrb_high': nrb_high,
         'nrb_highest': nrb_highest,
-        'num_classes': 3,
+        'num_classes': 4,
         'model': 'lptn',
         'seed': 42,
         'loss_type': 'focal'
