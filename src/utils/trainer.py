@@ -15,37 +15,46 @@ from torch.utils.data import DataLoader
 import optuna
 
 def Obj(trial, img_dir, val_dir):
-    # Define hyperparameters to tune
-    lr = trial.suggest_float('lr', 1e-5, 1e-3, log=True)
-    # batch_size = trial.suggest_categorical('batch_size', [16, 32, 64])
-    loss_weight = trial.suggest_float('loss_weight', 0.1, 1.0, log=True)
-    nrb_low = trial.suggest_int('nrb_low', 4, 8)
-    nrb_high = trial.suggest_int('nrb_high', 4, 8)
-    nrb_highest = trial.suggest_int('nrb_highest', 1, 3)
-    
-    configs = {
-        'epochs': 2,  # Set low for tuning speed, adjust as needed
-        'batch_size': 8,
-        'img_dir': img_dir,
-        'val_dir': val_dir,
-        'device': 'cuda',
-        'lr': lr,
-        'compile': False,
-        'num_workers': 4,
-        'checkpoint': '',
-        'loss_weight': loss_weight,
-        'nrb_low': nrb_low,
-        'nrb_high': nrb_high,
-        'nrb_highest': nrb_highest,
-        'num_classes': 4,
-        'model': 'lptn',
-        'seed': 42,
-        'loss_type': 'focal'
-    }
-    
-    # Train model with these hyperparameters
-    iou = train_model(configs)
-    return iou  # Optuna maximizes IoU  
+    try:
+        # Define hyperparameters to tune
+        lr = trial.suggest_float('lr', 1e-5, 1e-3, log=True)
+        # batch_size = trial.suggest_categorical('batch_size', [16, 32, 64])
+        loss_weight = trial.suggest_float('loss_weight', 0.1, 1.0, log=True)
+        nrb_low = trial.suggest_int('nrb_low', 4, 8)
+        nrb_high = trial.suggest_int('nrb_high', 4, 8)
+        nrb_highest = trial.suggest_int('nrb_highest', 1, 3)
+        
+        configs = {
+            'epochs': 2,  # Set low for tuning speed, adjust as needed
+            'batch_size': 8,
+            'img_dir': img_dir,
+            'val_dir': val_dir,
+            'device': 'cuda',
+            'lr': lr,
+            'compile': False,
+            'num_workers': 4,
+            'checkpoint': '',
+            'loss_weight': loss_weight,
+            'nrb_low': nrb_low,
+            'nrb_high': nrb_high,
+            'nrb_highest': nrb_highest,
+            'num_classes': 4,
+            'model': 'lptn',
+            'seed': 42,
+            'loss_type': 'focal'
+        }
+        
+        # Train model with these hyperparameters
+        iou = train_model(configs)
+        result = iou
+        if result is None:
+            print("Error: result is None")
+
+        return result
+
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return None 
 
 def set_seed(seed):
     """Set seeds for reproducibility"""
