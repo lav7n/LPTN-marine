@@ -86,7 +86,7 @@ def test(epochs,
     test_epoch = ValidEpoch(
     model, 
     loss=loss, 
-    metrics=metrics, 
+    metrics=[I], 
     device=device,
     verbose=True,
      )

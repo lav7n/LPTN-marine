@@ -95,7 +95,6 @@ class Epoch:
         pass
 
     def run(self, dataloader):
-        global global_lists  # Declare the variable as global
 
         self.on_epoch_start()
 
@@ -110,9 +109,10 @@ class Epoch:
             disable=not (self.verbose),
         ) as iterator:
             for x1, y in iterator:
+                y = y.squeeze(1)
                 x1, y = x1.to(self.device), y.to(self.device)
                 # print("x1 shape - ", x1.shape)
-                # print("y shape - ", y.shape)
+                # print("ygt shape - ", y.shape)
                 loss, y_pred = self.batch_update(x1, y)
 
                 # update loss logs
@@ -123,45 +123,22 @@ class Epoch:
 
                 # update metrics logs
                 for metric_fn in self.metrics:
-                    print('Computing :', metric_fn.__name__)
-                    metrics_meters = {metric.__name__: [AverageValueMeter() for _ in range(5)] for metric in self.metrics}
-
-                    for metric_fn in self.metrics:
-                        metric_values = metric_fn(y_pred, y.int()).cpu().detach().numpy()  # Assume metric_values is a list or array of length 5
-                        for i, metric_value in enumerate(metric_values):
-                            metrics_meters[metric_fn.__name__][i].add(metric_value)
-
-                metrics_logs = {}
-                dynamic_lists={}
-                # list0, list1, list2, list3, list4 = [],[],[],[],[]
-                for metric_name, meters in metrics_meters.items():
-                    for i, meter in enumerate(meters):
-                        class_specific_metric_name = f"{metric_name}_class{i}"
-                        metrics_logs[class_specific_metric_name] = meter.mean
-                        for i, meter in enumerate(meters):
-                            key = f"list{i}"
-                            if key not in dynamic_lists:
-                                dynamic_lists[key] = []
-                            dynamic_lists[key].append(meter)
-
+                    # print('Computing :', metric_fn.__name__)
+                    # y_pred = torch.argmax(y_pred, dim=1)
+                    # print("y pred", y_pred.shape)
+                    # print("y", y.int().shape)
+                    metric_value = metric_fn(y_pred, y.int()).cpu().detach().numpy()
+                    #metric_value = metric_fn(y_pred, y.int()).detach().cuda()
+                    metrics_meters[metric_fn.__name__].add(metric_value)
+                metrics_logs = {k: v.mean for k, v in metrics_meters.items()}
                 logs.update(metrics_logs)
-                #Print each list
-                for key, value in dynamic_lists.items():
-                    float_values = [v.mean for v in value]
-                    if key not in global_lists:
-                        global_lists[key] = []
-                    global_lists[key].extend(float_values)
-                    
-                    # print(f"Local {key}: {float_values}")
-                    # print(f"Global {key}: {global_lists[key]}")
-
-
 
                 if self.verbose:
                     s = self._format_logs(logs)
                     iterator.set_postfix_str(s)
 
         return logs
+
 
 
 class TrainEpoch(Epoch):
