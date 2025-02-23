@@ -66,7 +66,7 @@ def test(epochs,
 
 
     # D = Dice(average='none', threshold=0.5)
-    I = MulticlassJaccardIndex(num_classes = num_classes, ignore_index=0, average='none')
+    I = MulticlassJaccardIndex(num_classes = 4, ignore_index=0, average='micro')
     # D.__name__ = 'dice'
     I.__name__ = 'IoU'
 
