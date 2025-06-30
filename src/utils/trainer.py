@@ -10,6 +10,7 @@ from .loss import custom_loss
 from .dataloader import Dataset
 from .transformations import get_training_augmentation, get_validation_augmentation
 from .misc import list_img
+from ptflops import get_model_complexity_info
 from .model import LPTNPaper
 import os
 
@@ -39,6 +40,14 @@ def train(epochs, batch_size, img_dir, val_dir, device='cuda', lr=1e-4, compiler
 
     if compiler:
         model = torch.compile(model)
+
+    dummy_input_shape = (3, 384, 512)  # change if your model uses a different input size
+    try:
+        flops, params = get_model_complexity_info(model, dummy_input_shape, as_strings=False, print_per_layer_stat=False)
+        gflops = flops / 1e9
+        print(f'Model GFLOPs: {gflops:.2f} | Params: {params}')
+    except Exception as e:
+        print(f'FLOPs computation failed: {e}')
 
     imagelist = list_img(img_dir)
     masklist = list_img(val_dir)
