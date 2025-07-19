@@ -8,9 +8,9 @@ To address this, we propose LEMMA, a lightweight semantic segmentation model des
 
 ## To run the code:
 
-Download datasets from:
-Mastr1325 - https://box.vicos.si/borja/viamaro/index.html
-Oil-Spill-Drone - 
+Download datasets from: <br>
+Mastr1325 - https://box.vicos.si/borja/viamaro/index.html <br>
+Oil-Spill-Drone - https://zenodo.org/records/10555314 <br>
 
 1. Clone the repo
 2. %cd into the repo
