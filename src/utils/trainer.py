@@ -13,6 +13,7 @@ from .misc import list_img
 from ptflops import get_model_complexity_info
 from .model import LPTNPaper
 import os
+import segmentation_models_pytorch as smp
 
 def set_seed(seed):
     """Set seeds for reproducibility"""
@@ -26,16 +27,32 @@ def set_seed(seed):
     # Set a fixed value for Python hash seed
     os.environ["PYTHONHASHSEED"] = str(seed)
 
+
 def train(epochs, batch_size, img_dir, val_dir, device='cuda', lr=1e-4, compiler=False, 
           num_workers=4, checkpoint='', loss_weight=0.5, nrb_low=6, nrb_high=6, 
-          nrb_highest=2, num_classes=3, seed=42, loss_type='ce+dice'):   
+          nrb_highest=2, num_classes=3, seed=42, loss_type='ce+dice', model_type='lptn',
+          encoder_name='resnet34', encoder_weights='imagenet'):   
 
     # Set seeds for reproducibility
     set_seed(seed)
 
-    model = LPTNPaper(nrb_low=nrb_low, nrb_high=nrb_high, nrb_highest=nrb_highest,
-                     num_high=2, in_channels=3, kernel_size=3, padding=1, 
-                     num_classes=num_classes, device=device)
+    # Create model based on type
+    if model_type == 'lptn':
+        model = LPTNPaper(nrb_low=nrb_low, nrb_high=nrb_high, nrb_highest=nrb_highest,
+                         num_high=2, in_channels=3, kernel_size=3, padding=1, 
+                         num_classes=num_classes, device=device)
+    elif model_type == 'unet':
+        model = smp.Unet(encoder_name=encoder_name, encoder_weights=encoder_weights,
+                        in_channels=3, classes=num_classes)
+    elif model_type == 'deeplabv3':
+        model = smp.DeepLabV3Plus(encoder_name=encoder_name, encoder_weights=encoder_weights,
+                                 in_channels=3, classes=num_classes)
+    elif model_type == 'fpn':
+        model = smp.FPN(encoder_name=encoder_name, encoder_weights=encoder_weights,
+                       in_channels=3, classes=num_classes)
+    else:
+        raise ValueError(f"Unsupported model: {model_type}")
+    
     model.to(device)
 
     if compiler:
@@ -112,7 +129,7 @@ def train(epochs, batch_size, img_dir, val_dir, device='cuda', lr=1e-4, compiler
         if max_iou <= valid_logs['IoU']:
             max_iou = valid_logs['IoU']
             wandb.config.update({'max_IoU': max_iou}, allow_val_change=True)
-            torch.save(model.state_dict(), f'./best_MASTR_{nrb_low}_{nrb_high}_{nrb_highest}.pth')
+            torch.save(model.state_dict(), f'./best_{model_type}_{encoder_name}.pth')
             print('Model saved!')
          
     print(f'max IoU: {max_iou}')
@@ -121,4 +138,6 @@ def train_model(configs):
     train(configs['epochs'], configs['batch_size'], configs['img_dir'], configs['val_dir'],
           configs['device'], configs['lr'], configs['compile'], configs['num_workers'], 
           configs['checkpoint'], configs['loss_weight'], configs['nrb_low'], configs['nrb_high'],
-          configs['nrb_highest'], configs['num_classes'], configs['seed'], configs['loss_type'])
+          configs['nrb_highest'], configs['num_classes'], configs['seed'], configs['loss_type'],
+          configs.get('model_type', 'lptn'), configs.get('encoder_name', 'resnet34'), 
+          configs.get('encoder_weights', 'imagenet'))
