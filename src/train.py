@@ -22,7 +22,10 @@ def main(args):
         'num_classes':args.num_classes,
         'model': args.model,
         'seed': args.seed,
-        'loss_type': args.loss_type
+        'loss_type': args.loss_type,
+        'model_type': args.model_type,
+        'encoder_name': args.encoder_name,
+        'encoder_weights': args.encoder_weights
     }
     wandb.init(project="lptn-maritime", entity="kasliwal17",
                config={'model':args.model,'nrb_low': args.nrb_low,'nrb_high':args.nrb_high,'nrb_highest': args.nrb_highest, 
@@ -51,5 +54,8 @@ if __name__ == '__main__':
     parser.add_argument('--model', type=str, required=False, default='lptn')
     parser.add_argument('--seed', type=int, required=False, default=42)
     parser.add_argument('--loss_type', type=str, required=False, default='focal')
+    parser.add_argument('--model_type', type=str, required=False, default='lptn')
+    parser.add_argument('--encoder_name', type=str, required=False, default='resnet34')
+    parser.add_argument('--encoder_weights', type=str, required=False, default='imagenet')
     arguments = parser.parse_args()
     main(arguments)
